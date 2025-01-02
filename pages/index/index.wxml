@@ -1,0 +1,163 @@
+<!--index.wxml-->
+<view class="page-container {{isDarkMode ? 'dark-mode' : ''}}">
+  <!-- 使用条件渲染切换背景图片 -->
+  <image class="bg-image" 
+         src="{{isDarkMode ? '../../images/bg-b.jpg' : '../../images/bg.jpg'}}" 
+         mode="aspectFill"></image>
+  
+  <!-- 主体内容区 -->
+  <scroll-view class="content-area" scroll-y>
+    <!-- 加密类型选择 -->
+    <view class="type-selector">
+      <view class="type-tab {{selectedTypeIndex === 0 ? 'active' : ''}}" 
+            bindtap="switchType" data-index="0">
+        <text>文本加密</text>
+      </view>
+      <view class="type-tab {{selectedTypeIndex === 1 ? 'active' : ''}}" 
+            bindtap="switchType" data-index="1">
+        <text>图片加密</text>
+      </view>
+    </view>
+
+    <!-- 主要操作区域 -->
+    <view class="main-content">
+      <!-- 操作模式选择 -->
+      <view class="mode-tabs">
+        <view class="tab {{operationIndex === 0 ? 'active' : ''}}" 
+              bindtap="switchOperation" data-index="0">
+          <view class="icon-encrypt"></view>
+          <text>加密</text>
+        </view>
+        <view class="tab {{operationIndex === 1 ? 'active' : ''}}" 
+              bindtap="switchOperation" data-index="1">
+          <view class="icon-decrypt"></view>
+          <text>解密</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮组 -->
+      <view class="operation-buttons">
+        <button class="action-btn primary" 
+                bindtap="executeOperation"
+                disabled="{{!canExecute}}">
+          执行{{operations[operationIndex].name}}
+        </button>
+        <button class="action-btn secondary" 
+                bindtap="clearAll">清空</button>
+      </view>
+
+      <!-- 输入区域 -->
+      <block wx:if="{{selectedTypeIndex === 0}}">
+        <view class="input-wrapper">
+          <textarea class="input-area" 
+                   placeholder="请输入要{{operations[operationIndex].name}}的内容"
+                   value="{{inputText}}"
+                   bindinput="onInputChange"
+                   maxlength="5000"
+                   auto-height
+                   style="min-height: 150rpx;"
+          />
+          <view class="word-count">{{inputText.length}}/5000</view>
+        </view>
+      </block>
+
+      <!-- 图片加密区域 -->
+      <block wx:if="{{selectedTypeIndex === 1}}">
+        <!-- 解密结果区域 - 移到输入框上方 -->
+        <block wx:if="{{outputImage && operationIndex === 1}}">
+          <view class="result-section">
+            <view class="result-header">
+              <view class="result-title">解密结果</view>
+              <view class="quick-actions">
+                <button class="icon-btn" bindtap="saveImage">
+                  <view class="icon-gallery"></view>
+                  <text>保存到相册</text>
+                </button>
+                <button class="icon-btn" bindtap="shareResult">
+                  <view class="icon-share"></view>
+                  <text>分享</text>
+                </button>
+              </view>
+            </view>
+            <image src="{{outputImage}}" 
+                   mode="aspectFit" 
+                   class="result-image"/>
+          </view>
+        </block>
+
+        <view class="image-wrapper">
+          <block wx:if="{{operationIndex === 0}}">
+            <!-- 加密模式的图片选择器 -->
+            <view class="image-picker" bindtap="chooseImage" wx:if="{{!inputImage}}">
+              <view class="icon-upload"></view>
+              <text>点击选择或拍摄图片</text>
+            </view>
+            <image wx:else src="{{inputImage}}" mode="aspectFit" class="preview-image"/>
+          </block>
+          <block wx:else>
+            <!-- 解密模式的密文输入框 -->
+            <view class="image-decrypt-area">
+              <textarea class="input-area"
+                        placeholder="请输入图片密文"
+                        value="{{inputText}}"
+                        bindinput="onInputChange"
+                        maxlength="5000"
+                        auto-height
+              />
+              <button class="paste-button" bindtap="pasteFromClipboard">
+                <view class="icon-paste"></view>
+                <text>从剪贴板粘贴</text>
+              </button>
+            </view>
+          </block>
+        </view>
+      </block>
+
+      <!-- 密钥选择器 -->
+      <picker class="key-picker" 
+              bindchange="onKeyChange" 
+              value="{{selectedKeyIndex}}" 
+              range="{{keys}}" 
+              range-key="name">
+        <view class="picker-content">
+          <text>{{keys[selectedKeyIndex].name}}</text>
+          <view class="icon-arrow"></view>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 结果区域 -->
+    <block wx:if="{{outputText || outputImage}}">
+      <view class="result-section">
+        <view class="result-header">
+          <view class="result-title">{{operations[operationIndex].name}}结果</view>
+          <view class="quick-actions">
+            <button wx:if="{{outputText}}" 
+                    class="icon-btn" 
+                    bindtap="copyResult">
+              <view class="icon-copy"></view>
+              <text>复制</text>
+            </button>
+            <button class="icon-btn" 
+                    bindtap="shareResult">
+              <view class="icon-share"></view>
+              <text>分享</text>
+            </button>
+          </view>
+        </view>
+        <text wx:if="{{outputText}}" class="result-content" user-select>{{outputText}}</text>
+        <image wx:if="{{outputImage}}" 
+               src="{{outputImage}}" 
+               mode="aspectFit" 
+               class="result-image"/>
+      </view>
+    </block>
+  </scroll-view>
+
+  <!-- 主题切换按钮 -->
+  <view class="theme-switch" bindtap="toggleTheme">
+    <view class="icon-wrap {{isDarkMode ? 'icon-sun' : 'icon-moon'}}"></view>
+  </view>
+
+  <canvas canvas-id="shareCanvas" style="width: 300px; height: 400px; position: fixed; left: -9999px;"></canvas>
+</view>
