@@ -21,6 +21,44 @@
 
     <!-- 主要操作区域 -->
     <view class="main-content">
+      <!-- 加密算法选择器 -->
+      <picker class="algorithm-picker" 
+              bindchange="onAlgorithmChange" 
+              value="{{selectedAlgorithmIndex}}" 
+              range="{{algorithms}}" 
+              range-key="name">
+        <view class="picker-content">
+          <text>{{algorithms[selectedAlgorithmIndex].name}}</text>
+          <view class="icon-arrow"></view>
+        </view>
+      </picker>
+
+      <!-- 密钥选择区域 -->
+      <view class="key-section">
+        <picker class="key-picker" 
+                bindchange="onKeyChange" 
+                value="{{selectedKeyIndex}}" 
+                range="{{keys}}" 
+                range-key="name">
+          <view class="picker-content">
+            <text>{{keys[selectedKeyIndex].name}}</text>
+            <view class="icon-arrow"></view>
+          </view>
+        </picker>
+        
+        <!-- 添加密钥管理按钮 -->
+        <view class="key-management">
+          <button class="key-action-btn" bindtap="generateNewKey">
+            <view class="icon-generate"></view>
+            <text>生成密钥</text>
+          </button>
+          <button class="key-action-btn" bindtap="showKeyInput">
+            <view class="icon-add"></view>
+            <text>添加密钥</text>
+          </button>
+        </view>
+      </view>
+
       <!-- 操作模式选择 -->
       <view class="mode-tabs">
         <view class="tab {{operationIndex === 0 ? 'active' : ''}}" 
@@ -112,18 +150,6 @@
           </block>
         </view>
       </block>
-
-      <!-- 密钥选择器 -->
-      <picker class="key-picker" 
-              bindchange="onKeyChange" 
-              value="{{selectedKeyIndex}}" 
-              range="{{keys}}" 
-              range-key="name">
-        <view class="picker-content">
-          <text>{{keys[selectedKeyIndex].name}}</text>
-          <view class="icon-arrow"></view>
-        </view>
-      </picker>
     </view>
 
     <!-- 结果区域 -->

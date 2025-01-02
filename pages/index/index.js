@@ -33,7 +33,13 @@ Page({
     ],
     imageOperationIndex: 0,
     canExecute: false,
-    showDropdown: false
+    showDropdown: false,
+    algorithms: [
+      { name: 'AES', type: 'aes' },
+      { name: 'DES', type: 'des' },
+      { name: 'RSA', type: 'rsa' }
+    ],
+    selectedAlgorithmIndex: 0,
   },
 
   onLoad() {
@@ -626,5 +632,113 @@ Page({
         icon: 'none'
       })
     }
-  }
+  },
+
+  // 切换加密算法
+  onAlgorithmChange(e) {
+    this.setData({
+      selectedAlgorithmIndex: parseInt(e.detail.value),
+      outputText: '',
+      outputImage: '',
+      status: '已切换加密算法'
+    })
+  },
+
+  // 生成新密钥
+  generateNewKey() {
+    const algorithm = this.data.algorithms[this.data.selectedAlgorithmIndex]
+    let newKey = ''
+
+    switch (algorithm.type) {
+      case 'aes':
+        newKey = this.generateAESKey()
+        break
+      case 'des':
+        newKey = this.generateDESKey()
+        break
+      case 'rsa':
+        newKey = this.generateRSAKey()
+        break
+    }
+
+    wx.showModal({
+      title: '新生成的密钥',
+      content: newKey,
+      confirmText: '保存',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.saveNewKey(newKey)
+        }
+      }
+    })
+  },
+
+  // 生成 AES 密钥
+  generateAESKey() {
+    const length = 32 // 256位
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let key = ''
+    for (let i = 0; i < length; i++) {
+      key += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return key
+  },
+
+  // 生成 DES 密钥
+  generateDESKey() {
+    const length = 8 // 64位
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let key = ''
+    for (let i = 0; i < length; i++) {
+      key += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return key
+  },
+
+  // 生成 RSA 密钥对
+  generateRSAKey() {
+    // 这里需要引入专门的 RSA 密钥生成库
+    // 暂时返回模拟的密钥对
+    return {
+      publicKey: '模拟的公钥',
+      privateKey: '模拟的私钥'
+    }
+  },
+
+  // 保存新密钥
+  saveNewKey(key) {
+    const newKey = {
+      name: `密钥_${this.data.keys.length + 1}`,
+      key: key
+    }
+
+    const keys = [...this.data.keys, newKey]
+    this.setData({
+      keys,
+      selectedKeyIndex: keys.length - 1
+    })
+
+    // 保存到本地存储
+    wx.setStorageSync('encryption_keys', keys)
+
+    wx.showToast({
+      title: '密钥已保存',
+      icon: 'success'
+    })
+  },
+
+  // 显示密钥输入对话框
+  showKeyInput() {
+    wx.showModal({
+      title: '添加密钥',
+      placeholderText: '请输入密钥',
+      editable: true,
+      success: (res) => {
+        if (res.confirm && res.content) {
+          this.saveNewKey(res.content)
+        }
+      }
+    })
+  },
 })

@@ -796,6 +796,96 @@ button[type="primary"] {
   border-left: 4rpx solid #1E90FF;
 }
 
+/* 加密算法选择器样式 */
+.algorithm-picker {
+  margin: 24rpx 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+.algorithm-picker .picker-content {
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.algorithm-picker .picker-content::before {
+  content: '🔒';
+  margin-right: 12rpx;
+  font-size: 32rpx;
+}
+
+/* 密钥管理区域样式 */
+.key-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 24rpx 0;
+}
+
+.key-management {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.key-action-btn {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: #07C160;
+  background: rgba(7, 193, 96, 0.1);
+  border: none;
+  border-radius: 36rpx;
+  transition: all 0.3s;
+}
+
+.key-action-btn:active {
+  transform: scale(0.98);
+  background: rgba(7, 193, 96, 0.15);
+}
+
+/* 图标样式 */
+.icon-generate, .icon-add {
+  width: 32rpx;
+  height: 32rpx;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon-generate {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2307C160'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.17-5.24l-1.1-1.1c.71-1.33.53-3.01-.59-4.13C13.79 8.84 12.9 8.5 12 8.5c-.03 0-.06.01-.09.01L13 9.6l-1.06 1.06-2.83-2.83L11.94 5 13 6.06l-.96.96c1.27.01 2.53.48 3.5 1.44 1.7 1.71 1.91 4.36.63 6.3z'/%3E%3C/svg%3E");
+}
+
+.icon-add {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2307C160'%3E%3Cpath d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/%3E%3C/svg%3E");
+}
+
+/* 深色模式适配 */
+.dark-mode .algorithm-picker,
+.dark-mode .key-section {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-mode .algorithm-picker .picker-content,
+.dark-mode .key-picker .picker-content {
+  color: var(--text-primary);
+}
+
+.dark-mode .key-action-btn {
+  background: rgba(7, 193, 96, 0.2);
+}
+
 /* 密钥选择区域背景 */
 .key-section {
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(46, 125, 50, 0.1));
@@ -1727,7 +1817,6 @@ button[type="primary"] {
 .dark-mode .picker-content {
   color: var(--text-primary);
 }
-
 .dark-mode .icon-arrow {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E");
   opacity: 0.8;
@@ -1751,7 +1840,7 @@ button[type="primary"] {
 }
 
 /* 修改主题切换按钮的样式 */
-.theme-switch {
+.mode-switch {
   position: fixed;
   top: 12rpx;
   right: 20rpx;
@@ -1769,13 +1858,14 @@ button[type="primary"] {
 }
 
 /* 调整图标大小 */
-.theme-switch .icon-wrap {
+.mode-switch .icon-wrap {
   width: 28rpx;
   height: 28rpx;
   margin-right: 0;
 }
 
 /* 深色模式下的样式 */
-.dark-mode .theme-switch {
+.dark-mode .mode-switch {
   background: rgba(30, 30, 30, 0.9);
 }
+
